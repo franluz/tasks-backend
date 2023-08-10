@@ -7,13 +7,13 @@ module.exports = app => {
             return res.status(400).send('Dados Incompletos')
         }
         const user = await app.db('users')
-            .where({ email: req.body.email })
+            .where("LOWER(email)=LOWER(?)", req.body.email)
             .first()
         if (user) {
             bcrypt.compare(req.body.password, user.password, (err, isMatch) => {
                 if (err || !isMatch) {
-                    console.log('deu erro ',err)
-                    console.log('deu isMatch ',isMatch)
+                    console.log('deu erro ', err)
+                    console.log('deu isMatch ', isMatch)
                     return res.status(401).send()
                 }
                 const payload = { id: user.id }
